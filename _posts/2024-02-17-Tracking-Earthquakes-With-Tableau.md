@@ -1,7 +1,8 @@
 ---
 layout: post
 title: Tracking Earthquakes with Tableau!
-image: "/posts/earthquake.gif"
+image: "![](/posts/earthquake.gif)"
+
 tags: [Tableau, Data Visualization]
 ---
 
