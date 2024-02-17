@@ -12,7 +12,9 @@ I've outline my process for this project below.
 
 --- 
 
-### Situation: Create a dashboard to analyze a 30 day sample of data from an Earthquake monitoring agency. The dashboard needs to have the following features according to stakeholders:
+### Situation: 
+
+**Create a dashboard to analyze a 30 day sample of data from an Earthquake monitoring agency. The dashboard needs to have the following features according to stakeholders:**
 
 * A map showing where Earthquakes took place, it must show their intensity in terms of magnitude. 
 * Have a list of the top 10 largest earthquakes in terms of magnitude for easily isolation.
@@ -22,11 +24,11 @@ I've outline my process for this project below.
 
 ---
 
-### Task
+### Task:
 I need to develop a Tableau dashboard to visualize earthquake data comprehensively so that my stakeholders will be able to quickly identify meaningful insights or trends related to this 30 day sample.
 
 ---
-### Action
+### Action:
 
 1. **Track Largest Earthquakes:** Create a table to view the 10 largest earthquakes on a specific date or all-time for this 30-day sample.
 2. **Geographical Distribution:** Create world map to see the frequency of earthquake for a region as well as their magnitude.
