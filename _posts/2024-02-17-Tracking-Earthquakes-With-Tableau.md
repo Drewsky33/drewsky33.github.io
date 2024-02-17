@@ -11,7 +11,6 @@ I've outline my process for this project below.
 <iframe seamless frameborder="0" src="https://public.tableau.com/shared/DG9KRJX5S?:embed=yes&:display_count=yes&:showVizHome=no" width = '1090' height = '900'></iframe>
 
 --- 
-##Tableau Earthquake Dashboard Overview
 
 ### Situation: Create a dashboard to analyze a 30 day sample of data from an Earthquake monitoring agency. The dashboard needs to have the following features according to stakeholders:
 
@@ -45,11 +44,15 @@ The created dashboard allows users to:
 2. Have a quick look at seismic activity across the globe by zoning in on areas with high frequency and differentiate by magnitude with efficient use of color.
 3. Have access to a country level analysis for frequency, average magnitude, or maximum magnitude. 
 
+---
+
 ### Example Analysis:
 
 ##### What are the most earthquake-prone regions during this time period and on July 25th, 2022. 
 * All time: North America has the highest percentage of Earthquakes in this dataset at 53% followed by Central America at 20%. 
 * July 25th, 2022: North America's share of global earthquakes increased to 55%. On this day, Central America and Asia are very close with shares of 12% and 11% respectively. 
+
+--- 
 
 ### If given more time I would:
 * Explore magnitude trends over time. At what point in this sample were magnitudes at their peak. This could help alert safety authorities to have high awareness during a certain period of the year. 
