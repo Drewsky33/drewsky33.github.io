@@ -616,3 +616,6 @@ for url in all_urls:
 # Discussion <a name="discussion"></a>
 
 Here is my database! I'll be running this script regularly manually, but next steps can be how to update this automatically or set a schedule run time. That's another depth that I'm not quite ready to look at yet. But that is an area of extension that I'm interested in learning.
+
+!("img/posts/Saka.jpeg")
+
