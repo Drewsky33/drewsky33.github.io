@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Scraping Soccer Match Event Data from 
+title: Scraping Soccer Match Event Data
 image: "/posts/BukayoSaka.jpeg.png"
 tags: [Web Scraping, Sports Analytics, Database Creation, Python]
 ---
