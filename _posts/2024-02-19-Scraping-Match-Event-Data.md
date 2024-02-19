@@ -14,24 +14,26 @@ In this project, I create a web scraping pipeline for scraping data from [whosco
     - [Actions](#overview-actions)
     - [Results & Discussion](#overview-results)
 - [01. Concept Overview](#concept-overview)
+	- [Web Scraping](#concept-Webscraping)
+	- [Data Modeling](#concept-Datamodeling)
+	- [Automation](#concept-Automation)
 - [02. Data Overview & Preparation](#data-overview)
-- [03. Slowly building a pipeline](#Using Pandas and Beautiful Soup to scrape)
-- [04. Automating the Pipeline](#Creating Function to Automate Data Extraction)
-- [05. Looking at Output in Supabase](#discussion)
-- [05. Discussion](#discussion)
+- [03. Data Model with Pydantic](#data-model)
+- [04. Automating the Pipeline](#data-automation)
+- [05. Next Steps](#discussion)
 
 ___
 
 # Project Overview  <a name="overview-main"></a>
 
-### Context <a name="overview-context"></a>
+#### Context <a name="overview-context"></a>
 
 I've been wanting to find a way to build my own database so that I can get soccer match data to make predictions on, visualize, and extend analysis into the world of sports betting. I found a course done by `Mckay Johns that taught me the basics of webscraping. 
+
 The goal is to create pipeline for match event data (this specific post) and then do the same for historical data. 
 
-<br>
-<br>
-### Actions <a name="overview-actions"></a>
+
+#### Actions <a name="overview-actions"></a>
 
 For this project, I used beautiful soup for scraping along with selenium, pandas and numpy for transformations and string manipulation, json for dealing with html data and converting them to dictionaries, pydantic for creating data models, time for responsible scraping, supbabase where I'll host the data and typing for bringing in lists. 
 
@@ -43,30 +45,31 @@ ___
 
 # Concept Overview  <a name="concept-overview"></a>
 
-<br>
-#### Web Scraping
+
+#### Web Scraping <a name="concept-Webscraping"></a>
 
 Web scraping at a high levels involves extracting data from websites using packages like BeautifulSoup and requests. It allows us to automate data collection from web pages by parsing the HTML and extracting the required information. 
 
 
-<br>
-#### Data Modeling
 
-Data modeling is to structure and organize data in a way that makes it easily manageable, understandable, and usable. It is cruial for this task because we need to be able to find information about players outside of a certain match, teams outside of a certain match, or look up a specific match to get that information. 
+#### Data Modeling <a name="concept-Datamodeling"></a>
+
+Data modeling is to structure and organize data in a way that makes it easily manageable, understandable, and usable. It is crucial for this task because we need to be able to find information about players outside of a certain match, teams outside of a certain match, or look up a specific match to get that information. 
 By creating a data model with Pydantic we can store our data in an efficient in and meaningful manner for easier analysis and data retrieval going forward. 
 
 
-<br>
-#### Using functions to automate a pipeline
+
+#### Using functions to automate a pipeline <a name="concept-Automation"></a>
 
 The use of functions to automate this pipeline will be useful because it will allow me to parse a page, clean the data, and extract information for different variants of that page. In this case, getting different matches associated to a team based on url's for that team.
 
 
 ___
 
-<br>
+
 # Data Overview & Preparation  <a name="data-overview"></a>
 
+#### Import Packages <a name="prep-import"></a>
 First, I'll import all of the packages mentioned:
 
 ``` python
@@ -89,162 +92,527 @@ from typing import List, Optional
 from supabase import create_client, Client
 
 ```
-
-<br>
+#### Initiate Driver and Pass Url <a name="prep-initiate"></a>
 
 * Load in the Python libraries we require for scraping data, transforming it, and pushing to a cloud PostgreSQL database.
-
-Next, I need to initiate the driver. 
+* **Next,** I need to initiate the driver. 
 
 ``` python
 driver = webdriver.Chrome()
 ```
 
-From there I'll pass in our 
-<br>
-A sample of this data (the first 10 rows) can be seen below:
-<br>
-<br>
-
-| **customer_id** | **campaign_name** | **mailer_type** | **signup_flag** |
-|---|---|---|---|
-| 74 | delivery_club | Mailer1 | 1 |
-| 524 | delivery_club | Mailer1 | 1 |
-| 607 | delivery_club | Mailer2 | 1 |
-| 343 | delivery_club | Mailer1 | 0 |
-| 322 | delivery_club | Mailer2 | 1 |
-| 115 | delivery_club | Mailer2 | 0 |
-| 1 | delivery_club | Mailer2 | 1 |
-| 120 | delivery_club | Mailer1 | 1 |
-| 52 | delivery_club | Mailer1 | 1 |
-| 405 | delivery_club | Mailer1 | 0 |
-| 435 | delivery_club | Mailer2 | 0 |
-
-<br>
-In the DataFrame we have:
-
-* customer_id
-* campaign name
-* mailer_type (either Mailer1 or Mailer2)
-* signup_flag (either 1 or 0)
-
-___
-
-<br>
-# Applying Chi-Square Test For Independence <a name="chi-square-application"></a>
-
-<br>
-#### State Hypotheses & Acceptance Criteria For Test
-
-The very first thing we need to do in any form of Hypothesis Test is state our Null Hypothesis, our Alternate Hypothesis, and the Acceptance Criteria (more details on these in the section above)
-
-In the code below we code these in explcitly & clearly so we can utilise them later to explain the results.  We specify the common Acceptance Criteria value of 0.05.
+From there I'll pass in the url for the site I want to scrape which who scored. 
 
 ```python
+# WhoScored Url
+whoscored_url = "https://www.whoscored.com/Matches/1729476/Live/England-Premier-League-2023-2024-Manchester-City-Everton"
+```
 
-# specify hypotheses & acceptance criteria for test
-null_hypothesis = "There is no relationship between mailer type and signup rate.  They are independent"
-alternate_hypothesis = "There is a relationship between mailer type and signup rate.  They are not independent"
-acceptance_criteria = 0.05
+From there, I pass the driver into the URL:
+
+``` python
+# Pass the url into the driver
+driver.get(whoscored_url)
+```
+
+#### Parse Webpage with Beautiful Soup <a name="prep-soup"></a>
+
+``` python
+# Use Soup
+soup = BeautifulSoup(driver.page_source, 'html.parser')
+
+# We can't access stuff from a `<div> object` So we need to grab keywords from that script
+element = soup.select_one('script:-soup-contains("matchCentreData")') # let's use css selector
+```
+Now that we have I have the element part of the html, we are going to split on the line break and get only teh first element. 
+
+``` python 
+
+# Pull in match dictionary
+# Splitting the string on the phrase below and selection everything after that split
+# Second split is splitting on the line break phrase \n to remove the next dictionary , first element
+
+matchdict = json.loads(element.text.split("matchCentreData: ")[1].split(",\n")[0])
+
+``` 
+
+When we look at the new match output dictionary, we can see that we have a a variety of key value pairs related to the match. we have a nested dictionary for player's names and id's, venueName, elapsed time, scores at ht, ft, a dictionary for home team, one for away, and even more. 
+
+#### Parse Webpage with Beautiful Soup <a name="prep-cleaning"></a>
+
+After looking at a few of the keys within the `matchdict` I located the information I need within `events`. So next, I'm going to pass the  events portion of the dictionary into a pandas dataframe. I also need to drop null player id columns. 
+
+``` python
+match_events = matchdict['events']
+
+df = pd.DataFrame(match_events)
+
+## I want to see every column of my data frame
+# Set the option to display all columns
+pd.set_option('display.max_columns', None)
+
+df[df['playerId'].isna()]
+
+# Drop player id columns where there are nulls
+df.dropna(subset = 'playerId', inplace = True)
+```
+
+Now, we still have null values in other columns. What we we want to do is assign a value of None so that we can use this within a postgresSQL database.
+
+``` python
+df = df.where(pd.notnull(df), None)
+
+# Observe the columns we have
+df.columns
+
+``` 
+`['id', 'eventId', 'minute', 'second', 'teamId', 'x', 'y',
+       'expandedMinute', 'period', 'type', 'outcomeType', 'qualifiers',
+       'satisfiedEventsTypes', 'isTouch', 'playerId', 'endX', 'endY',
+       'relatedEventId', 'relatedPlayerId', 'blockedX', 'blockedY',
+       'goalMouthZ', 'goalMouthY', 'isShot', 'cardType', 'isGoal']`
+
+Then, I'll make my column names more readable. 
+
+``` python
+df = df.rename(
+    {
+        'eventId': 'event_id',
+        'expandedMinute': 'expanded_minute',
+        'outcomeType': 'outcome_type',
+        'isTouch': 'is_touch',
+        'playerId': 'player_id',
+        'teamId': 'team_id',
+        'endX': 'end_x',
+        'endY': 'end_y',
+        'blockedX': 'blocked_x',
+        'blockedY': 'blocked_y',
+        'goalMouthZ': 'goal_mouth_z',
+        'goalMouthY': 'goal_mouth_y',
+        'isShot': 'is_shot',
+        'cardType': 'card_type',
+        'isGoal': 'is_goal'
+        
+    },
+    axis = 1
+
+)
+```
+We also have to clean up the display names for each event that happens. We need this to know the action for that event. 
+
+``` python
+# Grab every single display name from period
+
+df['period_display_name'] = df['period'].apply(lambda x: x['displayName'])
+
+# Grab every single display name from type at row level
+df['type_display_name'] = df['type'].apply(lambda x: x['displayName'])
+
+# Check the outcome type
+df['outcome_type_display_name'] = df['outcome_type'].apply(lambda x: x['displayName'])
+
+# Drop unneeded columns
+df.drop(columns = ['period', 'type', 'outcome_type'], inplace = True)
+
+# Create new dataframe with only columns I want
+# Subset data with wanted column names
+df = df[[
+    'id', 'event_id', 'minute', 'second', 'team_id', 'player_id', 'x', 'y', 'end_x', 'end_y', 
+    'qualifiers', 'is_touch', 'blocked_x', 'blocked_y', 'goal_mouth_z', 'goal_mouth_y', 'is_shot', 
+    'card_type', 'is_goal', 'type_display_name', 'outcome_type_display_name', 'period_display_name'
+]]
+```
+
+After I've done this, I need to ensure that id's are of the correct type. Id's need to be integers, seconds, x/y coordinates should be floats, make sure that binary outcomes are booleans. Also need to 
+
+``` python
+# Clean id's to be integer type
+df[['id', 'event_id', 'minute', 'team_id', 'player_id']] = df[['id', 'event_id', 'minute', 'team_id', 'player_id']].astype(int)
+
+# Cast seconds, times, or spacial data as floats
+df[['second', 'x', 'y', 'end_x', 'end_y']] = df[['second', 'x', 'y', 'end_x', 'end_y']].astype(float)
+
+# Cast binary outcomes as booleans
+df[['is_shot', 'is_goal', 'card_type']] = df[['is_shot', 'is_goal', 'card_type']].astype(bool)
+
+
+# Remove null values for the binary outcomes
+df['is_goal'] = df['is_goal'].fillna(False)
+df['is_shot'] = df['is_shot'].fillna(False)
+df.iloc[0].to_dict()
+
+```
+Finally, we need to make sure that float fields are filled with a None value for ingestion into the database.
+
+
+
+# Data Modeling with Pydantic  <a name="data-model"></a>
+
+``` python
+class MatchEvent(BaseModel):
+    id: int
+    event_id: int
+    minute: int
+    second: float
+    team_id: int
+    player_id: int
+    x: float
+    y: float
+    end_x: float
+    end_y: float
+    qualifiers: List[dict]
+    is_touch: bool
+    blocked_x: Optional[float] = None
+    blocked_y: Optional[float] = None
+    goal_mouth_z: Optional[float] = None
+    goal_mouth_y: Optional[float] = None
+    is_shot: bool
+    card_type: bool
+    is_goal: bool
+    type_display_name: str
+    outcome_type_display_name: str
+    period_display_name: str
+
+class Player(BaseModel):
+    player_id: int
+    shirt_no: int
+    name: str
+    age: int
+    position: str
+    team_id: int
+    height: int
+    weight: int
+
+class Team(BaseModel):
+    team_id: int
+    name: str
+    country_name: str
+    manager_name: str
 
 ```
 
-<br>
-#### Calculate Observed Frequencies & Expected Frequencies
+I haven't finished testing the match table, but below are the scripts for creating the table in Supa Base:
 
-As mentioned in the section above, in a Chi-Square Test For Independence, the *observed frequencies* are the true values that we’ve seen, in other words the actual rates per group in the data itself.  The *expected frequencies* are what we would *expect* to see based on *all* of the data combined.
+``` sql
+CREATE TABLE match_event (
 
-The below code:
+id BIGINT PRIMARY KEY,
 
-* Summarises our dataset to a 2x2 matrix for *signup_flag* by *mailer_type*
-* Based on this, calculates the:
-    * Chi-Square Statistic
-    * p-value
-    * Degrees of Freedom
-    * Expected Values
-* Prints out the Chi-Square Statistic & p-value from the test
-* Calculates the Critical Value based upon our Acceptance Criteria & the Degrees Of Freedom
-* Prints out the Critical Value
+event_id INTEGER NOT NULL,
 
-```python
+minute INTEGER NOT NULL,
 
-# aggregate our data to get observed values
-observed_values = pd.crosstab(campaign_data["mailer_type"], campaign_data["signup_flag"]).values
+second FLOAT,
 
-# run the chi-square test
-chi2_statistic, p_value, dof, expected_values = chi2_contingency(observed_values, correction = False)
+team_id INTEGER NOT NULL,
 
-# print chi-square statistic
-print(chi2_statistic)
->> 1.94
+player_id INTEGER NOT NULL,
 
-# print p-value
-print(p_value)
->> 0.16
+x FLOAT NOT NULL,
 
-# find the critical value for our test
-critical_value = chi2.ppf(1 - acceptance_criteria, dof)
+y FLOAT NOT NULL,
 
-# print critical value
-print(critical_value)
->> 3.84
+end_x FLOAT,
+
+end_y FLOAT,
+
+-- For qualifiers, use JSONB as it allows storing a list of dictionaries
+
+qualifiers JSONB NOT NULL,
+
+is_touch BOOLEAN NOT NULL,
+
+blocked_x FLOAT,
+
+blocked_y FLOAT,
+
+goal_mouth_z FLOAT,
+
+goal_mouth_y FLOAT,
+
+is_shot BOOLEAN NOT NULL,
+
+card_type BOOLEAN NOT NULL,
+
+is_goal BOOLEAN NOT NULL,
+
+type_display_name TEXT NOT NULL,
+
+outcome_type_display_name TEXT NOT NULL,
+
+period_display_name TEXT NOT NULL
+
+
+
+-- Players Table
+CREATE TABLE IF NOT exists players (
+
+player_id BIGINT PRIMARY KEY,
+
+shirt_no INTEGER NOT NULL,
+
+name TEXT NOT NULL,
+
+age INTEGER NOT NULL,
+
+position TEXT NOT NULL,
+
+team_id INTEGER NOT NULL,
+
+height INTEGER NOT NULL,
+
+weight INTEGER NOT NULL
+
+);
+
+
+-- Team
+CREATE TABLE teams (
+
+team_id INTEGER PRIMARY KEY,
+
+name TEXT NOT NULL,
+
+country_name TEXT NOT NULL,
+
+manager_name TEXT NOT NULL
+
+);
 
 ```
-<br>
-Based upon our observed values, we can give this all some context with the sign-up rate of each group.  We get:
 
-* Mailer 1 (Low Cost): **32.8%** signup rate
-* Mailer 2 (High Cost): **37.8%** signup rate
+The tables are built based on the models generated from Pydantic. Then I created function insert the data into my supabase tables. 
 
-From this, we can see that the higher cost mailer does lead to a higher signup rate.  The results from our Chi-Square Test will provide us more information about how confident we can be that this difference is robust, or if it might have occured by chance.
+``` python
 
-We have a Chi-Square Statistic of **1.94** and a p-value of **0.16**.  The critical value for our specified Acceptance Criteria of 0.05 is **3.84**
-
-**Note** When applying the Chi-Square Test above, we use the parameter *correction = False* which means we are applying what is known as the *Yate's Correction* which is applied when your Degrees of Freedom is equal to one.  This correction helps to prevent overestimation of statistical signficance in this case.
-
-___
-
-<br>
-# Analysing The Results <a name="chi-square-results"></a>
-
-At this point we have everything we need to understand the results of our Chi-Square test - and just from the results above we can see that, since our resulting p-value of **0.16** is *greater* than our Acceptance Criteria of 0.05 then we will _retain_ the Null Hypothesis and conclude that there is no significant difference between the signup rates of Mailer 1 and Mailer 2.
-
-We can make the same conclusion based upon our resulting Chi-Square statistic of **1.94** being _lower_ than our Critical Value of **3.84**
-
-To make this script more dynamic, we can create code to automatically interpret the results and explain the outcome to us...
-
-```python
-
-# print the results (based upon p-value)
-if p_value <= acceptance_criteria:
-    print(f"As our p-value of {p_value} is lower than our acceptance_criteria of {acceptance_criteria} - we reject the null hypothesis, and conclude that: {alternate_hypothesis}")
-else:
-    print(f"As our p-value of {p_value} is higher than our acceptance_criteria of {acceptance_criteria} - we retain the null hypothesis, and conclude that: {null_hypothesis}")
-
->> As our p-value of 0.16351 is higher than our acceptance_criteria of 0.05 - we retain the null hypothesis, and conclude that: There is no relationship between mailer type and signup rate.  They are independent
-
-
-# print the results (based upon p-value)
-if chi2_statistic >= critical_value:
-    print(f"As our chi-square statistic of {chi2_statistic} is higher than our critical value of {critical_value} - we reject the null hypothesis, and conclude that: {alternate_hypothesis}")
-else:
-    print(f"As our chi-square statistic of {chi2_statistic} is lower than our critical value of {critical_value} - we retain the null hypothesis, and conclude that: {null_hypothesis}")
+def insert_match_events(df, supabase):
     
->> As our chi-square statistic of 1.9414 is lower than our critical value of 3.841458820694124 - we retain the null hypothesis, and conclude that: There is no relationship between mailer type and signup rate.  They are independent
+    # Create a list of verified dictionaries
+    events = [
+        
+        MatchEvent(**x).dict()
+        for x in df.to_dict(orient = 'records')
+    ]
+    
+    execution = supabase.table('match_event').upsert(events).execute() # insert any new rows, and update any old rows with the same primary key
+
+# Initialize connection to supabase using the project url and api_key. 
+supabase = create_client(project_url, api_key)
+
+# Insert match events
+insert_match_events(df, supabase)
 
 ```
-<br>
-As we can see from the outputs of these print statements, we do indeed retain the null hypothesis.  We could not find enough evidence that the signup rates for Mailer 1 and Mailer 2 were different - and thus conclude that there was no significant difference.
+
+#### For players:
+
+``` python
+team_info = []
+
+team_info.append({
+    'team_id': matchdict['home']['teamId'],
+    'name': matchdict['home']['name'],
+    'country_name': matchdict['home']['countryName'],
+    'manager_name': matchdict['home']['managerName'],
+    'players': matchdict['home']['players'],
+})
+
+team_info.append({
+    'team_id': matchdict['away']['teamId'],
+    'name': matchdict['away']['name'],
+    'country_name': matchdict['away']['countryName'],
+    'manager_name': matchdict['away']['managerName'],
+    'players': matchdict['away']['players'],
+})
+
+
+def insert_players(team_info, supabase):
+    players = []
+    
+    for team in team_info:
+        for player in team['players']:
+            players.append({
+                'player_id': player['playerId'],
+                'team_id': team['team_id'],
+                'shirt_no': player['shirtNo'],
+                'name': player['name'],
+                'position': player['position'],
+                'age': player['age'],
+                'height': player['height'],
+                'weight': player['weight']
+            })
+    execution = supabase.table('players').upsert(players).execute()
+
+insert_players(team_info, supabase) 
+
+```
+
 
 ___
 
-<br>
+# Automating the Pipeline  <a name="data-automation"></a>
+
+#### Create a function to automate the entire process.
+
+Now that I have the scraper working, the data models created, the tables created, and the functions to insert data into the tables. Now I need to tie all of this together into one pipeline function
+
+```python
+
+def scrape_match_events(whoscored_url, driver):
+    
+    # Visit the provided URL using the Selenium WebDriver
+    driver.get(whoscored_url)
+    
+    # Parse the HTML of the loaded page using BeautifulSoup
+    soup = BeautifulSoup(driver.page_source, 'html.parser')
+    
+    # Extract the script tag containing matchCentreData using BeautifulSoup
+    element = soup.select_one('script:-soup-contains("matchCentreData")')
+    
+    # Extract the match data as a dictionary from the script element
+    matchdict = json.loads(element.text.split("matchCentreData: ")[1].split(',\n')[0])
+    
+    # Extract the events from the match data dictionary
+    match_events = matchdict['events']
+    
+    # Convert the events data into a Pandas DataFrame
+    df = pd.DataFrame(match_events)
+    
+    # Drop rows with missing playerId
+    df.dropna(subset='playerId', inplace=True)
+    
+    # Replace NaN values with None
+    df = df.where(pd.notnull(df), None)
+    
+    # Rename columns to match the Pydantic model
+    df = df.rename(
+        {
+        'eventId': 'event_id',
+        'expandedMinute': 'expanded_minute',
+        'outcomeType': 'outcome_type',
+        'isTouch': 'is_touch',
+        'playerId': 'player_id',
+        'teamId': 'team_id',
+        'endX': 'end_x',
+        'endY': 'end_y',
+        'blockedX': 'blocked_x',
+        'blockedY': 'blocked_y',
+        'goalMouthZ': 'goal_mouth_z',
+        'goalMouthY': 'goal_mouth_y',
+        'isShot': 'is_shot',
+        'cardType': 'card_type',
+        'isGoal': 'is_goal'
+    },
+        axis=1
+    )
+    
+    # Extract additional information from nested dictionaries and drop unnecessary columns
+    df['period_display_name'] = df['period'].apply(lambda x: x['displayName'])
+    df['type_display_name'] = df['type'].apply(lambda x: x['displayName'])
+    df['outcome_type_display_name'] = df['outcome_type'].apply(lambda x: x['displayName'])
+    df.drop(columns=["period", "type", "outcome_type"], inplace=True)
+    
+    # Fill missing columns and values
+    if 'is_goal' not in df.columns:
+        df['is_goal'] = False
+        
+    if 'is_card' not in df.columns:
+        df['is_card'] = False
+        df['card_type'] = False
+        
+    # Filter out events with type_display_name 'OffsideGiven'
+    df = df[~(df['type_display_name'] == "OffsideGiven")]
+    
+    # Reorder columns
+    df = df[[
+        'id', 'event_id', 'minute', 'second', 'team_id', 'player_id', 'x', 'y', 'end_x', 'end_y',
+        'qualifiers', 'is_touch', 'blocked_x', 'blocked_y', 'goal_mouth_z', 'goal_mouth_y', 'is_shot',
+        'card_type', 'is_goal', 'type_display_name', 'outcome_type_display_name',
+        'period_display_name'
+    ]]
+    
+    # Convert data types of selected columns
+    df[['id', 'event_id', 'minute', 'team_id', 'player_id']] = df[['id', 'event_id', 'minute', 'team_id', 'player_id']].astype(np.int64)
+    df[['second', 'x', 'y', 'end_x', 'end_y']] = df[['second', 'x', 'y', 'end_x', 'end_y']].astype(float)
+    df[['is_shot', 'is_goal', 'card_type']] = df[['is_shot', 'is_goal', 'card_type']].astype(bool)
+    
+    # Fill NaN values with None for columns of float data type
+    for column in df.columns:
+        if df[column].dtype == np.float64 or df[column].dtype == np.float32:
+            df[column] = np.where(
+                np.isnan(df[column]),
+                None,
+                df[column]
+            )
+    
+    # Insert match events data into the database
+    insert_match_events(df, supabase)
+    
+    # Extract team information and insert players data into the database
+    team_info = []
+    team_info.append({
+        'team_id': matchdict['home']['teamId'],
+        'name': matchdict['home']['name'],
+        'country_name': matchdict['home']['countryName'],
+        'manager_name': matchdict['home']['managerName'],
+        'players': matchdict['home']['players'],
+    })
+
+    team_info.append({
+        'team_id': matchdict['away']['teamId'],
+        'name': matchdict['away']['name'],
+        'country_name': matchdict['away']['countryName'],
+        'manager_name': matchdict['away']['managerName'],
+        'players': matchdict['away']['players'],
+    })
+    
+    insert_players(team_info, supabase)
+    
+    insert_teams(team_info, supabase)
+    
+    
+    # Return a success message
+    return print('Success')
+
+```
+#### Scrape for all games for one team. 
+
+The final part of this process is scraping data relevant to the team I want. I'm going to scrape for Arsenal. So similarly, I'll create a beautiful soup instance, and use the `.select` functionality to to find all elements where an anchor tag `<a>` has a substring called live. The specifies that we are looking for hyperlinks. We are looking for this hyperlink for every game on the Arsenal page. 
+
+``` python
+# Initiate new driver
+driver.get('https://www.whoscored.com/Teams/13/Fixtures/England-Arsenal')
+
+# Create Soup Instance
+soup = BeautifulSoup(driver.page_source, 'html.parser')
+
+# Extract urls
+all_urls = soup.select('a[href*= "\/Live\/"]')
+
+# Add website url with sub hyper link
+
+# List comprehension
+all_urls = list(set([
+    
+    'https://www.whoscored.com' + x.attrs['href']
+    
+    for x in all_urls
+])
+
+```
+
+Lastly, I loop through each url in the list, print the url name, and run the scrape_match_events script. With a sleep passed in to slow the scrape down. 
+
+``` python
+for url in all_urls:
+    print(url)
+    scrape_match_events(
+        whoscored_url = url,
+        driver = driver
+    )
+    time.sleep(2)
+```
+
 # Discussion <a name="discussion"></a>
 
-While we saw that the higher cost Mailer 2 had a higher signup rate (37.8%) than the lower cost Mailer 1 (32.8%) it appears that this difference is not significant, at least at our Acceptance Criteria of 0.05.
-
-Without running this Hypothesis Test, the client may have concluded that they should always look to go with higher cost mailers - and from what we've seen in this test, that may not be a great decision.  It would result in them spending more, but not *necessarily* gaining any extra revenue as a result
-
-Our results here also do not say that there *definitely isn't a difference between the two mailers* - we are only advising that we should not make any rigid conclusions *at this point*.  
-
-Running more A/B Tests like this, gathering more data, and then re-running this test may provide us, and the client more insight!
+Here is my database! I'll be running this script regularly manually, but next steps can be how to update this automatically or set a schedule run time. That's another depth that I'm not quite ready to look at yet. But that is an area of extension that I'm interested in learning.
