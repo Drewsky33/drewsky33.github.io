@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Scraping Soccer Match Event Data
-image: "/posts/Saka.jpeg"
+image: "/posts/saka.jpeg"
 tags: [Web Scraping, Sports Analytics, Database Creation, Python]
 ---
 
@@ -617,5 +617,5 @@ for url in all_urls:
 
 Here is my database! I'll be running this script regularly manually, but next steps can be how to update this automatically or set a schedule run time. That's another depth that I'm not quite ready to look at yet. But that is an area of extension that I'm interested in learning.
 
-!("img/posts/Saka.jpeg")
+![alt text](/img/posts/supabase.png "Supa")
 
