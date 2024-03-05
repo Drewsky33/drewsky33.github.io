@@ -9,7 +9,7 @@ plugins:
 #-------------------------------
 # General Site Settings
 title: Andrew Lujan
-description: "Hi I'm Andrew/Drew, and I'm a Business Intelligence Analyst and Data Scientist.  My portfolio focuses on interesting projects I've recently undertaken, with a strong emphasis on business impact, actionable insights, and data storytelling. Please visit my Github & LinkedIn pages (or download my Resume) by using the links below!"
+description: "Hi I'm Andrew/Drew, and I'm a Business Intelligence Analyst and Data Scientist.  My portfolio focuses on interesting projects I've recently undertaken, with a strong emphasis on business impact, actionable insights, and data storytelling. Please visit my Github & LinkedIn pages or checkout my projects below!"
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
 
