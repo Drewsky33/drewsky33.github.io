@@ -1,4 +1,3 @@
-
 ---
 layout: post
 title: Enhancing Targeting Accuracy Using ML
@@ -404,7 +403,7 @@ This creates the below plot, which shows us that the highest cross-validated cla
 
 The variable that has been dropped is `total_sales` but from the chart we can see that the difference from this is immaterial.  However, we will continue on with the selected seven!
 
-<br>
+
 ![alt text](/img/posts/log-reg-feature-selection-plot.png "Logistic Regression Feature Selection Plot")
 
 
@@ -464,7 +463,7 @@ plt.show()
 
 ![alt text](/img/posts/log-reg-confusion-matrix.png "Logistic Regression Confusion Matrix")
 
-<br>
+
 
 The aim is to have a high proportion of observations falling into the top left cell (predicted non-signup and actual non-signup) and the bottom right cell (predicted signup and actual signup).
 
@@ -574,7 +573,7 @@ max_f1 = max(f1_scores)
 max_f1_idx = f1_scores.index(max_f1)
 
 ```
-<br>
+
 
 Now we have run this, we can use the below code to plot the results!
 
@@ -1269,7 +1268,7 @@ We don't want any variables to be "bunched up" due to a single outlier value, as
 
 In this code section, just like we saw when applying Logistic Regression, I will use **.describe()** from Pandas to investigate the spread of values for each of our predictors.  The results of this can be seen in the table below.
 
-<br>
+
 
 | **metric** | **distance_from_store** | **credit_score** | **total_sales** | **total_items** | **transaction_count** | **product_area_count** | **average_basket_value** |
 |---|---|---|---|---|---|---|---|
@@ -1662,4 +1661,5 @@ While predictive accuracy was relatively high - other modeling approaches could 
 We could even look to tune the hyper-parameters of the Random Forest, notably regularization parameters such as tree depth, as well as potentially training on a higher number of Decision Trees in the Random Forest.
 
 Further feature engineering could also be explored to see if we have fed the model the most useful features for predicting customer loyalty.
+
 
