@@ -22,7 +22,7 @@ Our client, a grocery retailer, wants to utilize Machine Learning to reduce mail
 - [05. Random Forest](#rf-title)
 - [06. KNN](#knn-title)
 - [07. Modeling Summary](#modeling-summary)
-- [08. Application](#modelling-application)
+- [08. Application](#modeling-application)
 - [09. Growth & Next Steps](#growth-next-steps)
 
 ___
@@ -1620,7 +1620,7 @@ Based upon these, the chosen the model is the Random Forest as it was a) the mos
 * Decision Tree = 0.929
 * Logistic Regression = 0.866
 
-<br>
+
 **Metric 2: Precision**
 
 * KNN = 1.00
@@ -1628,7 +1628,7 @@ Based upon these, the chosen the model is the Random Forest as it was a) the mos
 * Decision Tree = 0.885
 * Logistic Regression = 0.784
 
-<br>
+
 **Metric 3: Recall**
 
 * Random Forest = 0.904
@@ -1636,7 +1636,7 @@ Based upon these, the chosen the model is the Random Forest as it was a) the mos
 * KNN = 0.762
 * Logistic Regression = 0.69
 
-<br>
+
 **Metric 4: F1 Score**
 
 * Random Forest = 0.895
