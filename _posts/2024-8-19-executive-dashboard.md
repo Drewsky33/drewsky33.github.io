@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Stationary Station: The Exec Board Portal
-image: "/posts/Napa_Valley_quake.jpg"
+image: "/posts/240_F_34703220_TiczZRk73LnvUcvt2J2qj57mKzwKAtBT.jpg"
 
 tags: [Tableau, Data Visualization]
 ---
