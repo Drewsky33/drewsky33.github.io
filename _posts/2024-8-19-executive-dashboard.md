@@ -9,7 +9,7 @@ tags: [Tableau, Data Visualization]
 I've been tasked by an Earthquake monitoring agency to help analyze and visualize global earthquake patterns. I've been handed a 30-day sample of data. 
 I've outline my process for this project below.
 
-<iframe seamless frameborder="0" src="https://public.tableau.com/shared/7WJS838R6?:embed=yes&:display_count=yes&:showVizHome=no" width = '1090' height = '900'></iframe>
+<iframe seamless frameborder="0" src="https://public.tableau.com/shared/7WJS838R6?:embed=yes&:display_count=yes&:showVizHome=no" width = '1200' height = '1200'></iframe>
 
 --- 
 
