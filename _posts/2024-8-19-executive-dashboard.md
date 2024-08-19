@@ -6,23 +6,25 @@ image: "/posts/240_F_34703220_TiczZRk73LnvUcvt2J2qj57mKzwKAtBT.jpg"
 tags: [Tableau, Data Visualization]
 ---
 
-I've been tasked by an Earthquake monitoring agency to help analyze and visualize global earthquake patterns. I've been handed a 30-day sample of data. 
-I've outline my process for this project below.
+I've just been hired by Maven Supplies to design and build an executive-level BI solution. 
 
-<iframe seamless frameborder="0" src="https://public.tableau.com/shared/7WJS838R6?:embed=yes&:display_count=yes&:showVizHome=no" width = '1200' height = '1200'></iframe>
+<iframe seamless frameborder="0" src="https://public.tableau.com/shared/7WJS838R6?:embed=yes&:display_count=yes&:showVizHome=no" width = '1090' height = '900'></iframe>
 
 --- 
 
 ### Situation: 
 
-**Create a dashboard to analyze a 30 day sample of data from an Earthquake monitoring agency. The dashboard needs to have the following features according to stakeholders:**
+**Create a dashboard to track key KPI's (sales, profit, returns), compare performance in our markets, analyze the profitability of categories, and help our client id high-value customers.**
 
-* A map showing where Earthquakes took place, it must show their intensity in terms of magnitude. 
-* Have a list of the top 10 largest earthquakes in terms of magnitude for easily isolation.
-* Have a breakdown of the percentage of earthquakes that occurred in each broad location.
-* Then have a look at the each of the countries within each broad location. This should show how many earthquakes took place, what the average magnitude was, and what the maximum magnitude was. 
-* Finally, all visuals need to be controlled by a single date filter to observe the each of the visuals on a day by day basis. 
+**This will require:**
 
+* High level KPI cards for general monitory. 
+* Filterability by Date, Segment, Category, State, Region, and City. 
+* Have a breakdown for Sales relative to our goals by Region. 
+* Have a map, that can track Sales & Profit by City. 
+* Create, a treemap to look at Sales in our categories and their subcategories.
+* Have a trended view of Sales & Profit by Month.
+* Finally, we'd like drill actions that follow a standard reading pattern. Left to right and down. 
 ---
 
 ### Task:
