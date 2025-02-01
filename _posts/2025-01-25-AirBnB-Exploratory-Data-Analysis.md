@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Analyzing AirBnB Listings: The Impact of 2015 Regulations
+title: Analyzing AirBnB Listings - The Impact of 2015 Regulations
 image: "/posts/bnb.png"
 tags: [Airbnb, Data Analysis, Pricing Trends, Regulations, Python]
 ---
