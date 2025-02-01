@@ -280,5 +280,80 @@ The results of this analysis can be useful for **policymakers**, **Airbnb hosts*
 
 ___
 
+# Appendix: 1 Pager Code
 
+``` python
+
+# Visualizations
+
+navy_blue = "#264653"  # Main bar color
+grey = "#B0B0B0"  # Highlight color
+black = "#000000"  # Title color
+
+fig, axes = plt.subplots(3, 2, figsize = (15, 12), gridspec_kw={'hspace': 0.7})
+sns.set(style = "whitegrid")
+
+# Helper function for titles
+#def add_title_with_subtitle(ax, title, subtitle):
+ #    ax.set_title(title, loc='left', fontsize=14, fontweight='bold', color=black, pad = 20)
+  #   ax.text(0, 1.02, subtitle, transform=ax.transAxes, fontsize=10, color=grey, va='bottom', ha='left')
+
+def add_title_with_subtitle(ax, title, subtitle, highlight_text=None, highlight_color=None):
+    ax.set_title(title, loc='left', fontsize=14, fontweight='bold', color=black, pad=20)
+    if highlight_text and highlight_color:
+        subtitle = subtitle.replace(highlight_text, f"{{\color[rgb]{{{highlight_color}}}{highlight_text}}}")
+    ax.text(0, 1.05, subtitle, transform=ax.transAxes, fontsize=10, color=grey, va='bottom', ha='left')
+
+
+# Bar chart 1
+sns.barplot(x = paris_listings_neighborhood["price"], y = paris_listings_neighborhood.index , ax = axes [0, 0], color = navy_blue)
+add_title_with_subtitle(axes[0, 0], "Average Listing Price by Neighborhood", "Elysee has the most expensive average listing price in Paris.")
+axes[0, 0].set_xlabel("Average Price (€)", fontsize=12, color=grey)
+axes[0, 0].set_ylabel("Neighborhood", fontsize=12, color=grey)
+axes[0, 0].tick_params(axis='x', labelsize=10)
+
+
+# Bar Chart 2
+sns.barplot(x = paris_listings_accommodations["price"], y = paris_listings_accommodations.index, ax = axes[0, 1], color = navy_blue, orient='h')
+add_title_with_subtitle(axes[0, 1], "Average Listing Price by Accommodation Number", "In the neighborhood Elysee, listings that accommodated 14 people were the most expensive.")
+axes[0,1].set_xlabel("Average Price (€)", fontsize = 12, color = grey)
+axes[0,1].set_ylabel("Accomodation Number", fontsize = 12, color = grey)
+axes[0,1].invert_yaxis()
+axes[0, 1].tick_params(axis='x', labelsize=10)
+
+# Line Chart 1: New Hosts Over Time
+axes[1, 0].plot(paris_listings_over_time.index, paris_listings_over_time['neighbourhood'], color=navy_blue, marker="v", linewidth=2)
+add_title_with_subtitle(axes[1, 0], "New Hosts Over Time", "2015 regulations drove a drastic drop in listings after an initial spike.")
+axes[1, 0].set_xlabel("Year", fontsize=12, color=grey)
+axes[1, 0].set_ylabel("New Hosts", fontsize=12, color=grey)
+axes[1, 0].set_ylim(0)
+
+# Add vertical shading for a specific period (e.g., 2015 regulation period impact)
+axes[1, 0].axvspan(pd.Timestamp("2015-01-01"), pd.Timestamp("2016-01-01"), color=grey, alpha=0.2, label="Regulation Period")
+axes[1, 0].legend(loc='upper right', fontsize=10, frameon=False)
+
+# Line Chart 2: Average Listing Price by Year
+axes[1, 1].plot(paris_listings_over_time.index, paris_listings_over_time["price"], color = navy_blue, marker = "v", linewidth =2)
+add_title_with_subtitle(axes[1, 1], "Average Listing Price by Year", "The average listing price shot up in 2010 and then stabilized until a drop in 2022.")
+axes[1, 1].set_xlabel("Year", fontsize = 12, color = grey)
+axes[1, 1].set_ylabel("Average Price (€)", fontsize=12, color=grey)
+
+# Add shading to indicate the maximum price
+max_price = paris_listings_over_time['price'].max()
+axes[1, 1].axhspan(max_price - 5, max_price + 5, color=grey, alpha=0.2, label="Max Price Range")
+axes[1, 1].legend(loc='upper right', fontsize=10, frameon=False)
+
+# Remove final chart on the bottom right and use the space for insights
+axes[2, 1].axis("off")
+axes[2, 0].axis("off")
+
+plt.tight_layout()
+
+# Save the figure as a PNG file
+plt.savefig("paris_airbnb_report1.png", dpi=300)
+
+plt.show()
+
+
+```
 
