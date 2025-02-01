@@ -58,7 +58,7 @@ ___
 
 ### **Loading and Cleaning Data**
 
-First, I had to import the data. I had to ensure the encoding was correct and also parsed host_since to conver to a datetime.
+First, I had to import the data. I had to ensure the encoding was correct and also parsed host_since to convert to a datetime.
 
 ```python
 import pandas as pd
@@ -75,7 +75,8 @@ df = pd.read_csv(path,
 df.head()
 
 ```
-##### Add Photo
+
+![alt text](/img/posts/head1.png "Checking Shape of Data")
 
 After that, I wanted to ensure that the data was read in correctly. So I used `.info()` to look for missing data and ensure the columns were of the correct data type. 
 
@@ -85,11 +86,11 @@ After that, I wanted to ensure that the data was read in correctly. So I used `.
 df.info()
 
 ```
-##### Add Photo
+![alt text](/img/posts/info().png "Checking for Data Types and Missing Records")
 
 Following that, I filtered the data down to records where the `city` was Paris to examine Paris. Finally, I grabbed every row for a select set of relevant columns. 
 
-``` Python
+``` python
 
 # Use Query to filter down
 paris_listings = (
@@ -103,7 +104,7 @@ paris_listings = (
 paris_listings.head(10)
 
 ```
-##### Add Photo
+![alt text](/img/posts/parisfilter.png "Filtering Data to Paris")
 
 ### **QA the Data**
 Next, I wanted to look at the missing entries of the dataset to see if it would potentially skew our data. There were 33 missing entries in the `host_since` column. Not enough to impact our data so I proceeded.
@@ -113,7 +114,7 @@ Next, I wanted to look at the missing entries of the dataset to see if it would 
 paris_listings.isna().sum()
 
 ```
-##### Add Photo
+![alt text](/img/posts/isna().png "Checking for Missing Records")
 
 Then I profiled the numerical columns of our datasets using the `.describe()` call. 
 
@@ -122,6 +123,8 @@ Then I profiled the numerical columns of our datasets using the `.describe()` ca
 paris_listings.describe()
 
 ```
+
+![alt text](/img/posts/describe.png "QAing the data")
 
 I noticed the `accommodates` column had a minimum was zero so I wanted to see just how many. So did the `price` column. 
 
@@ -134,8 +137,11 @@ paris_listings.query("accommodates == 0 ").count()
 paris_listings.query("price == 0 ").count()
 
 ```
+
+![alt text](/img/posts/zerocounts.png "Zero Count Records")
+
 Accommodates had 54 rows with zero and price had 62. Neither had significant records so, I opted to keep them. 
-##### Add Photo
+
 
 ### **Data Aggregation**
 First, I needed to create a dataset that would allow me to visualize the average price of each neighborhood. 
@@ -150,6 +156,8 @@ paris_listings_neighborhood = (
 
 ```
 
+![alt text](/img/posts/mostexpensiveneighorhood.png "Most Expensive Neighborhood Aggregation")
+
 Then, I needed to look  at the average price for different accommodation levels in the most expensive neighborhood "Elysee".
 
 ``` python
@@ -162,6 +170,8 @@ paris_listings_accommodations = (
 )
 
 ```
+
+![alt text](/img/posts/accommodation.png "Elysee Price by Accommodation Size")
 
 Finally, I created a time series to look at the average price and the number of listings over time at the yearly level. 
 
@@ -176,9 +186,10 @@ paris_listings_over_time = (
     })
 )
 ```
+
+![alt text](/img/posts/timeseries.png "Time Series Aggregation")
 ___
 
-# **STOPPED HERE RESUME TOMORROW**
 
 # Pricing Trends in Paris <a name="pricing-trends"></a>
 
@@ -195,7 +206,8 @@ ax.set_ylabel("Neighborhood")
 plt.show()
 ```
 
-**_Screenshot Placeholder: Average Price by Neighborhood_**
+![alt text](/img/posts/pricebyneighborhood.png "Neighborhood Viz")
+
 
 ### **Average Price by Accommodates in Elysee**
 ```python
@@ -208,7 +220,7 @@ ax.set_ylabel("Accommodates")
 plt.show()
 ```
 
-**_Screenshot Placeholder: Average Price by Accommodates in Elysee_**
+![alt text](/img/posts/elyseeaccommodationpricing.png "Zero Count Records")
 
 ___
 
@@ -227,7 +239,7 @@ ax.legend()
 plt.show()
 ```
 
-**_Screenshot Placeholder: New Hosts Over Time_**
+![alt text](/img/posts/newhosttimeseries.png "New Hosts Over time")
 
 ### **Average Price Over Time**
 ```python
@@ -243,7 +255,9 @@ ax.legend()
 plt.show()
 ```
 
-**_Screenshot Placeholder: Average Price Over Time_**
+![alt text](/img/posts/pricetimeseries.png "Price Time Series")
+
+
 
 ___
 
