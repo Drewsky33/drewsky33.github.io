@@ -51,7 +51,8 @@ ___
 - **Despite a drop in listings in response to regulartory changes, the average listing price continued to rise until a recent drop in 2022**, this could potentially be attributed to market adjustments.
 - **Elysee remains the most expensive neighborhood**, with higher-priced listings persisting even after the regulations.
 
-![alt text](/img/1pagerupdated.png "Logistic Regression Feature Selection Plot")
+![alt text](/img/posts/1pagerupdated.png "AirBnb Findings 1 Pager")
+
 
 # Data Overview & Preparation <a name="data-overview"></a>
 
