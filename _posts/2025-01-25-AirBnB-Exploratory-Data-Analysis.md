@@ -50,7 +50,8 @@ ___
 - **New host registrations dropped significantly in response to 2015 regulatory changes**, which illustrated the impact of the regulatory changes.
 - **Despite a drop in listings in response to regulartory changes, the average listing price continued to rise until a recent drop in 2022**, this could potentially be attributed to market adjustments.
 - **Elysee remains the most expensive neighborhood**, with higher-priced listings persisting even after the regulations.
-___
+
+![alt text](/img/1pagerupdated.png "Logistic Regression Feature Selection Plot")
 
 # Data Overview & Preparation <a name="data-overview"></a>
 
