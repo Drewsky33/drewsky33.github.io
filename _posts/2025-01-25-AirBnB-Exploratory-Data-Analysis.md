@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Analyzing Paris Airbnb Listings and the Impact of 2015 Regulations
-image: "/posts/paris_airbnb_market_analysis.jpg"
+image: "/posts/bnb.mp4"
 tags: [Airbnb, Data Analysis, Pricing Trends, Regulations, Python]
 ---
 
