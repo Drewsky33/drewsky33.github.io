@@ -25,31 +25,31 @@ ___
 
 ### Context <a name="overview-context"></a>
 
-As Airbnb has grown in popularity, many cities have introduced regulations to limit the number of properties listed. Paris, one of Airbnb’s most active markets, saw significant regulatory changes in **2015**, aimed at curbing short-term rentals. This analysis seeks to explore **pricing trends**, **market dynamics**, and **the impact of these regulations on new host registrations**.
+As Airbnb has grown in popularity, many cities have introduced regulations to limit the number of properties listed. Paris, one of Airbnb’s most active markets, saw significant regulatory changes in **2015**, aimed at curbing short-term rentals. This analysis is an exploration of the impact of 2015 regulations on **pricing trends** and **market dynamics**.
 
 To achieve this, I analyzed **Airbnb listing data for Paris**, focusing on:
 
-- **Price trends across neighborhoods**
+- **Pricing trends across neighborhoods**
 - **Price differences based on accommodation capacity**
-- **The number of new hosts over time**
-- **The effect of 2015 regulations on host activity and pricing**
+- **The number of new hosts over time and potential effects from regulations**
+- **And the overall effect of 2015 regulations on host activity and pricing**
 
 ### Actions <a name="overview-actions"></a>
 
 To conduct this analysis, the following steps were taken:
 - **Data was imported and cleaned**
-- **Data was QA'd to ensure accurate analysis.**
-- **I filtered down the listings dataset to only Paris listings.**
-- **Data was reshaped (aggregated) for analysis.**
-- **A helper function to add a formatted subtitle was created.**
-- **A 1 page report with the relevant visualizations was created.**
-___
+- **Data was QA'd to ensure accurate analysis**
+- **I filtered down the listings dataset to only Paris listings**
+- **Data was reshaped (aggregated) for analysis**
+- **I created a helper function to add a formatted subtitle**
+- **A 1 page report with the relevant visualizations was created**
 
 # Analysis TL;DR <a name="analysis-summary"></a>
 
-- **New host registrations dropped significantly in response to 2015 regulatory changes**, which illustrated the impact of the regulatory changes.
-- **Despite a drop in listings in response to regulartory changes, the average listing price continued to rise until a recent drop in 2022**, this could potentially be attributed to market adjustments.
-- **Elysee remains the most expensive neighborhood**, with higher-priced listings persisting even after the regulations.
+- **New hosts entering the Paris market dropped significantly in response to 2015 regulatory changes**
+- **Despite a drop in listings in response to regulatory changes, the average listing price continued to rise until a recent drop in 2022**, this could potentially be attributed to market adjustments
+- **Elysee was the most expensive neighorhood.**
+- **In Elysee**, the general price of an accommodation has a positive relationship with the size of the accommodation.
 
 ![alt text](/img/posts/1pagerupdated.png "AirBnb Findings 1 Pager")
 
@@ -58,7 +58,7 @@ ___
 
 ### **Loading and Cleaning Data**
 
-First, I had to import the data. I had to ensure the encoding was correct and also parsed host_since to convert to a datetime.
+First, I had to import the data. I had to ensure the encoding was correct and also parsed `host_since` to convert to a datetime.
 
 ```python
 import pandas as pd
@@ -88,7 +88,7 @@ df.info()
 ```
 ![alt text](/img/posts/info.png "Checking for Data Types and Missing Records")
 
-Following that, I filtered the data down to records where the `city` was Paris to examine Paris. Finally, I grabbed every row for a select set of relevant columns. 
+Following that, I filtered the data down to records where the `city` was Paris. Finally, I grabbed every row for a select set of relevant columns. 
 
 ``` python
 
@@ -107,6 +107,7 @@ paris_listings.head(10)
 ![alt text](/img/posts/parisfilter.png "Filtering Data to Paris")
 
 ### **QA the Data**
+
 Next, I wanted to look at the missing entries of the dataset to see if it would potentially skew our data. There were 33 missing entries in the `host_since` column. Not enough to impact our data so I proceeded.
 
 ``` python
@@ -116,7 +117,7 @@ paris_listings.isna().sum()
 ```
 ![alt text](/img/posts/isna().png "Checking for Missing Records")
 
-Then I profiled the numerical columns of our datasets using the `.describe()` call. 
+Then, I profiled the numerical columns of our datasets using the `.describe()` call. 
 
 ```python
 # Profile our numeric columns
@@ -126,7 +127,7 @@ paris_listings.describe()
 
 ![alt text](/img/posts/describe.png "QAing the data")
 
-I noticed the `accommodates` column had a minimum was zero so I wanted to see just how many. So did the `price` column. 
+I noticed the `accommodates` column had a minimum of zero so I wanted to see just how many. So did the `price` column. 
 
 ``` python
 
@@ -140,11 +141,11 @@ paris_listings.query("price == 0 ").count()
 
 ![alt text](/img/posts/zerocounts.png "Zero Count Records")
 
-Accommodates had 54 rows with zero and price had 62. Neither had significant records so, I opted to keep them. 
+Accommodates had 54 rows with zero and price had 62. Neither had s significant number of records with zero so I opted to keep them. 
 
 
 ### **Data Aggregation**
-First, I needed to create a dataset that would allow me to visualize the average price of each neighborhood. 
+First, I needed to create a dataset that would allow me to visualize the average price of each neighborhood. To do this I performed an aggregation by the `neighbourhood` column and got the average price at that level. Then, I sorted the values in descending order so I could visualize the rows in descending order. 
 
 ```python
 # Group by Neighbourhood
@@ -158,7 +159,7 @@ paris_listings_neighborhood = (
 
 ![alt text](/img/posts/mostexpensiveneighborhood.png "Most Expensive Neighborhood Aggregation")
 
-Then, I needed to look  at the average price for different accommodation levels in the most expensive neighborhood "Elysee".
+Zooming in on Elysee, I wanted to drill down into the average price of each listing based on their accommodation size. I found that there was a positive relationship between price and number of people the listing accommodated. 
 
 ``` python
 # Filter Data for Accommodations in Elysee
@@ -173,7 +174,11 @@ paris_listings_accommodations = (
 
 ![alt text](/img/posts/accommodation.png "Elysee Price by Accommodation Size")
 
-Finally, I created a time series to look at the average price and the number of listings over time at the yearly level. 
+Zooming back out, I thought it made sense to look at pricing trends over time for the **Paris** market. So I aggregated the data at the yearly level and got the count of listings so we could see how many new listings entered the market each year.
+* I wanted to see if the regulations had any impact on new hosts entering the market.
+
+I also aggregated average price of listings at the yearly level. 
+* For the same reason, I wanted to see if there were market reactions to the 2015 hosting regulations. 
 
 ``` python
 # Create a time-series dataset
@@ -188,7 +193,7 @@ paris_listings_over_time = (
 ```
 
 ![alt text](/img/posts/timeseries.png "Time Series Aggregation")
-___
+
 
 
 # Pricing Trends in Paris <a name="pricing-trends"></a>
@@ -208,8 +213,10 @@ plt.show()
 
 ![alt text](/img/posts/pricebyneighborhood.png "Neighborhood Viz")
 
+As we noted before Elysee was the most expensive neighorhood by a large gap. ~25 euro more expensive than the next closest neighborhood. 
 
-### **Average Price by Accommodates in Elysee**
+
+### **Average Price by Accommodation Size in Elysee**
 ```python
 # Plot accommodates price data
 fig, ax = plt.subplots(figsize=(10,6))
@@ -221,6 +228,8 @@ plt.show()
 ```
 
 ![alt text](/img/posts/elyseeaccommodationpricing.png "Zero Count Records")
+
+Looking at the pricing in **Elysee**, we observe the positively correlated relationship between accommodation size and average price. Interestingly, a listing that accommodates 14 people had the largest average price!
 
 ___
 
@@ -241,6 +250,8 @@ plt.show()
 
 ![alt text](/img/posts/newhosttimeseries.png "New Hosts Over time")
 
+In 2015, there was a notable shift in the number of new listings entering the market. There was an initial spike, but a drastic drop between 2017 and 2018. The number of listings then stabilized and had a nother large drop in 2022. 
+
 ### **Average Price Over Time**
 ```python
 # Plot average price over time
@@ -257,16 +268,16 @@ plt.show()
 
 ![alt text](/img/posts/pricetimeseries.png "Price Time Series")
 
-
+As for price adjustment, you could see the response of hosts after the 2015 regulations. Perhaps with hosts being unable to list multiple properties due to regulations, we see a hike in prices in 2019 to compensate for lost opportunities. 
 
 ___
 
 # Key Insights <a name="key-insights"></a>
 
-1. **Regulations Introduced in 2015 Significantly Reduced New Host Registrations**
+1. **Regulations Introduced in 2015 significantly reduced new host registrations**
 2. **Despite Regulations, Prices Have Increased Over Time**
 3. **Elysee Continues to be the Most Expensive Neighborhood**
-4. **Fewer Listings, More Competition**
+4. **Fewer Listings, More Competition, Higher Prices**
 
 ___
 
@@ -276,7 +287,7 @@ ___
 - **Pricing trends indicate that Airbnb remains lucrative in Paris**, especially in high-demand neighborhoods.
 - **Further research could explore guest booking behaviors** to understand whether **regulations have impacted consumer demand or only host supply**.
 
-The results of this analysis can be useful for **policymakers**, **Airbnb hosts**, and **investors**, helping them better understand how regulations shape market dynamics in short-term rentals.
+This analysis could prove useful for **policymakers**, **Airbnb hosts**, and **investors**, helping them better understand how regulations shape market dynamics in short-term rentals.
 
 ___
 
