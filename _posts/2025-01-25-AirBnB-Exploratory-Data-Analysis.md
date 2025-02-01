@@ -86,7 +86,7 @@ After that, I wanted to ensure that the data was read in correctly. So I used `.
 df.info()
 
 ```
-![alt text](/img/posts/info().png "Checking for Data Types and Missing Records")
+![alt text](/img/posts/info.png "Checking for Data Types and Missing Records")
 
 Following that, I filtered the data down to records where the `city` was Paris to examine Paris. Finally, I grabbed every row for a select set of relevant columns. 
 
@@ -156,7 +156,7 @@ paris_listings_neighborhood = (
 
 ```
 
-![alt text](/img/posts/mostexpensiveneighorhood.png "Most Expensive Neighborhood Aggregation")
+![alt text](/img/posts/mostexpensiveneighborhood.png "Most Expensive Neighborhood Aggregation")
 
 Then, I needed to look  at the average price for different accommodation levels in the most expensive neighborhood "Elysee".
 
