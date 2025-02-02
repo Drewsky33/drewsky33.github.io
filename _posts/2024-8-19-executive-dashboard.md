@@ -14,7 +14,7 @@ I've just been hired by Maven Supplies to design and build an executive-level BI
 
 ### Situation: 
 
-** Our client needs a way to track key KPI's (sales, profit, units, returns), compare market performance, analyze our best categories based on profitability, and find high-value customers. **
+**Our client needs a way to track key KPI's (sales, profit, units, returns), compare market performance, analyze our best categories based on profitability, and find high-value customers.**
 
 **This will require:**
 
@@ -44,7 +44,7 @@ I've just been hired by Maven Supplies to design and build an executive-level BI
 ---
 ### Result
 
-The created soulition allows users to:
+The created soulution allows users to:
 1. Monitor key KPI's at an exec level.
 2. Identify market opportunities for growth. 
 3. Hone on specific supply segments.
